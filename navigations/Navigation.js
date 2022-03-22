@@ -1,21 +1,20 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { StyleSheet } from 'react-native';
+import { Link, NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Icon } from 'react-native-elements';
-import { Image } from 'react-native-elements';
+import { Icon, Image } from 'react-native-elements';
 import Home from '../screens/Home';
 import Favorites from '../screens/Favorites';
-import { StyleSheet } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
-
 export default function Navigation() {
-
-    const iconReturn = (route, color) => {
+    const iconReturn = (route, color) => {   
         let iconName = {
             home: "home-outline",
-            favorites: "heart-outline"
+            favorites: "heart-outline",
+            settings: "cog-outline",
+            news: "newspaper-variant-outline",
         };
         return (<Icon
             type="material-community"
@@ -24,63 +23,54 @@ export default function Navigation() {
             color={color}  
         />)
     } 
-/* tabBarOptions:{
-                inactiveTintColor: "white",
-                activeTintColor: "red",
-            } */
+
   return (
     <NavigationContainer>
         <Tab.Navigator
         tabBarPosition="top"
         initialRouteName="favorites"
         tabBarShowLabel={false}
-        screenOptions={ ({ route }) => ({
+        sceneContainerStyle={{backgroundColor:"black"}} /* is for container screens */
+        headerTitleAlign='center'
+        screenOptions={ ({ route }) => ({     
             tabBarIcon: ({ color }) => iconReturn(route, color),
             tabBarActiveTintColor:"red",
-            tabBarInactiveTintColor:"white",
-            /*headerShown: false, = remove bar header
-            tabBarShowLabel:false, = show name of screen in navbar bottom*/
-            /* headerTitle:false,
-            headerTitleStyle:false,
-            headerShadowVisible:false,
-             */
-
-            
-            headerTitle:"Netflix",
-            /* headerTitle: (props) => ( // App Logo
-            <Image
-                style={{ width: 100, height: 25 }}
-                source={require('../assets/netflix.png')}
-                resizeMode='contain'
-            />
-            ), */
-              
-            headerStyle:styles.container,
-            
-            tabBarStyle:{ backgroundColor:"blue", borderTopLeftRadius:10, borderTopRightRadius:10}/* is bar Bottom */
-        })}
-            
+            tabBarInactiveTintColor:"white",    
+            headerTitle: () => <LogoTitle/>, 
+            headerTitleAlign: 'center',
+            headerStyle: styles.headerBar,    /* is for top bar */
+            tabBarStyle: styles.bottomBar,   /* is for Bottom bar*/
+        })}        
     >
-            <Tab.Screen 
-                name="home"
-                component={Home}
-                
-            />
-            <Tab.Screen 
-                name="favorites"
-                component={Favorites}
-                
-            />
-            
+            <Tab.Screen name="news" component={Home} />
+            <Tab.Screen name="home" component={Home} />
+            <Tab.Screen name="favorites" component={Favorites} options={{tabBarBadge: 3 }} />     
+            <Tab.Screen name="settings" component={Home} />
         </Tab.Navigator>
     </NavigationContainer>
   )
 }
+const LogoTitle = () => { //App Logo
+    return ( 
+        <Link to={{ screen: 'home'}}>
+            <Image
+                style={{ width: 100, height: 25 }}
+                source={require('../assets/netflix.png')}
+                resizeMode='contain'                 
+                />
+        </Link>
+    )
+};
+
 const styles = StyleSheet.create({
-    container: {
-      display:"flex",
-      width:"100%",
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'yellow',
-    }});
+    headerBar:{
+        backgroundColor: 'black',borderStyle: 'solid', 
+        borderBottomColor:"red", borderWidth:1 
+    },
+    bottomBar:{
+        position:"absolute", backgroundColor:"black",
+        borderTopColor:"red", borderStyle:'solid',
+        borderStartWidth:1, borderTopWidth:1, borderEndWidth:1, 
+        borderTopLeftRadius:16, borderTopRightRadius:16,
+    }
+});
